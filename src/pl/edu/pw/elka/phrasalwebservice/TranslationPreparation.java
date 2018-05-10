@@ -32,7 +32,7 @@ public class TranslationPreparation {
         //Decoder represents the object providing methods to translate sentences.
         //Decoding is a fancy name of translation process.
         Decoder decoder = new Decoder(languageModel, translationModel);
-        decoder.runConsoleInteractiveModeDecoding();
+        decoder.runDecodingFromConsoleInInteractiveMode();
     }
 
     public static void main(String[] args) throws Exception {

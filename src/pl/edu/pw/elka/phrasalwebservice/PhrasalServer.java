@@ -30,9 +30,7 @@ public class PhrasalServer {
             e.printStackTrace();
         }
 
-        //start decoder to be sure that it can handle translations
-        //decoder.runConsoleInteractiveModeDecoding();
-
+        decoder.loadModelWithDefaultConfigInServerMode();
     }
 
     public void runTranslationService(int serverPort) {
@@ -82,12 +80,16 @@ public class PhrasalServer {
                             if (input == null) {
                                 break;
                             }
-                            //TODO mock - answering the same sentence, replace with translation
-                            out.println(input);
+
+                            String translatedSentence = decoder.translateSentenceInServerMode(input);
+                            out.println(translatedSentence);
                         }
                     } catch (SocketTimeoutException e) {
                         out.println("Socket timeout. Connection finished.");
                     }
+
+                    in.close();
+                    out.close();
                 } finally {
                     socket.close();
                 }
