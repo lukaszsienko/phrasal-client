@@ -40,7 +40,7 @@ public class PhrasalServer {
             while (true) {
                 Socket socket = listener.accept();
                 TranslateRequestHandler requestHandlerThread = new TranslateRequestHandler(socket);
-                requestHandlerThread.run();
+                requestHandlerThread.start();
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -53,7 +53,7 @@ public class PhrasalServer {
         }
     }
 
-    private class TranslateRequestHandler implements Runnable {
+    private class TranslateRequestHandler extends Thread {
 
         private static final int SOCKET_READ_TIMEOUT_MS = 15*1000;
         private Socket socket;
