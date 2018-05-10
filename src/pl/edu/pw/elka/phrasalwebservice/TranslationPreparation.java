@@ -1,10 +1,10 @@
-package mytranslationsystem;
+package pl.edu.pw.elka.phrasalwebservice;
 
 import pl.edu.pw.elka.phrasalwrapper.*;
 
-public class Example {
+public class TranslationPreparation {
 
-    public static void exampleUseCase(String englishFilePath, String foreignFilePath) throws Exception {
+    public static void runFullPipeline(String englishFilePath, String foreignFilePath) throws Exception {
         //Firstly, lets specify parallel corpus files, corresponding lines in files consists translated sentences.
         ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath);
         //Tokenization and lowercasing of both files is strongly suggested. This will overwrite existing files.
@@ -38,6 +38,6 @@ public class Example {
     public static void main(String[] args) throws Exception {
         String englishFilePath = args[0];
         String foreignFilePath = args[1];
-        exampleUseCase(englishFilePath, foreignFilePath);
+        runFullPipeline(englishFilePath, foreignFilePath);
     }
 }
