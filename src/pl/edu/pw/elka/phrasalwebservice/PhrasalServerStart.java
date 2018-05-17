@@ -3,7 +3,7 @@ package pl.edu.pw.elka.phrasalwebservice;
 public class PhrasalServerStart {
 
     public static void main(String[] args) {
-        if (args.length != 3) {
+        if (args.length != 4) {
             System.out.println("Nalezy przekazac 4 parametry - englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath, serverPort");
             System.exit(0);
         }
