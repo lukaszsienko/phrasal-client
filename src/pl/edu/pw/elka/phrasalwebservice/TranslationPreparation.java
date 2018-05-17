@@ -4,9 +4,9 @@ import pl.edu.pw.elka.phrasalwrapper.*;
 
 public class TranslationPreparation {
 
-    public static void runFullPipeline(String englishFilePath, String foreignFilePath) throws Exception {
+    public static void runFullPipeline(String englishFilePath, String foreignFilePath, String englishOnlyCorpusFilePath) throws Exception {
         //Firstly, lets specify parallel corpus files, corresponding lines in files consists translated sentences.
-        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath);
+        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath);
         //Tokenization and lowercasing of both files is strongly suggested. This will overwrite existing files.
         corpus.tokenize();
 
@@ -38,6 +38,7 @@ public class TranslationPreparation {
     public static void main(String[] args) throws Exception {
         String englishFilePath = args[0];
         String foreignFilePath = args[1];
-        runFullPipeline(englishFilePath, foreignFilePath);
+        String englishOnlyCorpusFilePath = args[2];
+        runFullPipeline(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath);
     }
 }
