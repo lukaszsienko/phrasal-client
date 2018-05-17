@@ -4,9 +4,9 @@ import pl.edu.pw.elka.phrasalwrapper.*;
 
 public class Example {
 
-    public static void exampleUseCase(String englishFilePath, String foreignFilePath) throws Exception {
+    public static void exampleUseCase(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath) throws Exception {
         //Firstly, lets specify parallel corpus files, corresponding lines in files consists translated sentences.
-        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath);
+        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
         //Tokenization and lowercasing of both files is strongly suggested. This will overwrite existing files.
         corpus.tokenize();
 
@@ -38,6 +38,7 @@ public class Example {
     public static void main(String[] args) throws Exception {
         String englishFilePath = args[0];
         String foreignFilePath = args[1];
-        exampleUseCase(englishFilePath, foreignFilePath);
+        String onlyEnglishCorpusFilePath = args[2];
+        exampleUseCase(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
     }
 }
