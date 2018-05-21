@@ -4,7 +4,7 @@ import pl.edu.pw.elka.phrasalwrapper.*;
 
 public class TranslationPreparation {
 
-    public static void runFullPipeline(String englishFilePath, String foreignFilePath, String englishOnlyCorpusFilePath) throws Exception {
+    public static void runFullPipeline(String englishFilePath, String foreignFilePath, String englishOnlyCorpusFilePath, String englishPartOfParallerTuningCorpusPath, String foreignPartOfParallerTuningCorpusPath) throws Exception {
         //Firstly, lets specify parallel corpus files, corresponding lines in files consists translated sentences.
         ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath);
         //Tokenization and lowercasing of both files is strongly suggested. This will overwrite existing files.
@@ -29,9 +29,14 @@ public class TranslationPreparation {
         //Results goes to "/models/translation_model"
         translationModel.buildTranslationModel();
 
+        //Tuning language model, output goes to a directory in which program was started ( System.getProperty("user.dir")
+        TranslationTuner tuner = new TranslationTuner(englishPartOfParallerTuningCorpusPath, foreignPartOfParallerTuningCorpusPath, corpus, languageModel, translationModel);
+        tuner.tokenizeTuningCorpus();
+        tuner.runTuning();
+
         //Decoder represents the object providing methods to translate sentences.
         //Decoding is a fancy name of translation process.
-        Decoder decoder = new Decoder(languageModel, translationModel);
+        Decoder decoder = new Decoder(languageModel, translationModel, tuner);
         decoder.runDecodingFromConsoleInInteractiveMode();
     }
 
@@ -39,6 +44,8 @@ public class TranslationPreparation {
         String englishFilePath = args[0];
         String foreignFilePath = args[1];
         String englishOnlyCorpusFilePath = args[2];
-        runFullPipeline(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath);
+        String englishPartOfParallerTuningCorpusPath = args[3];
+        String foreignPartOfParallerTuningCorpusPath = args[4];
+        runFullPipeline(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath, englishPartOfParallerTuningCorpusPath, foreignPartOfParallerTuningCorpusPath);
     }
 }

@@ -19,13 +19,13 @@ public class PhrasalServer {
     private TranslationModel translationModel;
     private Decoder decoder;
 
-    public PhrasalServer(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath) {
+    public PhrasalServer(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath, String tunerModelWeightsFilePath) {
         try {
             corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
             alignmentModel = new WordAlignmentModel(corpus);
             languageModel = new LanguageModel(5, corpus);
             translationModel = new TranslationModel(alignmentModel, corpus);
-            decoder = new Decoder(languageModel, translationModel);
+            decoder = new Decoder(languageModel, translationModel, tunerModelWeightsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
         }
