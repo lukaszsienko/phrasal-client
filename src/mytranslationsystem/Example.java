@@ -4,9 +4,9 @@ import pl.edu.pw.elka.phrasalwrapper.*;
 
 public class Example {
 
-    public static void exampleUseCase(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath) throws Exception {
+    public static void exampleUseCase(String englishFilePath, String foreignFilePath, String englishOnlyCorpusFilePath, String englishPartOfParallerTuningCorpusPath, String foreignPartOfParallerTuningCorpusPath) throws Exception {
         //Firstly, lets specify parallel corpus files, corresponding lines in files consists translated sentences.
-        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
+        ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, englishOnlyCorpusFilePath);
         //Tokenization and lowercasing of both files is strongly suggested. This will overwrite existing files.
         corpus.tokenize();
 
@@ -29,9 +29,14 @@ public class Example {
         //Results goes to "/models/translation_model"
         translationModel.buildTranslationModel();
 
+        //Model tuning. Output goes to a directory in which JVM was started. You can check this using: System.getProperty("user.dir")
+        TranslationTuner tuner = new TranslationTuner(englishPartOfParallerTuningCorpusPath, foreignPartOfParallerTuningCorpusPath, corpus, languageModel, translationModel);
+        tuner.tokenizeTuningCorpus();
+        tuner.runTuning();
+
         //Decoder represents the object providing methods to translate sentences.
         //Decoding is a fancy name of translation process.
-        Decoder decoder = new Decoder(languageModel, translationModel);
+        Decoder decoder = new Decoder(languageModel, translationModel, tuner);
         decoder.runDecodingFromConsoleInInteractiveMode();
     }
 
@@ -39,6 +44,8 @@ public class Example {
         String englishFilePath = args[0];
         String foreignFilePath = args[1];
         String onlyEnglishCorpusFilePath = args[2];
-        exampleUseCase(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
+        String englishPartOfParallerTuningCorpusPath = args[3];
+        String foreignPartOfParallerTuningCorpusPath = args[4];
+        exampleUseCase(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath, englishPartOfParallerTuningCorpusPath, foreignPartOfParallerTuningCorpusPath);
     }
 }
