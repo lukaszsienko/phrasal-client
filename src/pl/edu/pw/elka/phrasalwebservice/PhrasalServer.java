@@ -85,7 +85,7 @@ public class PhrasalServer {
                             out.println(translatedSentence);
                         }
                     } catch (SocketTimeoutException e) {
-                        out.println("Socket timeout. Connection finished.");
+                        //do nothing, when timeout happened just finish handling thread
                     }
 
                     in.close();
