@@ -4,7 +4,7 @@ public class PhrasalServerStart {
 
     public static void main(String[] args) {
         if (args.length != 5) {
-            System.out.println("Nalezy przekazac 4 parametry - englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath, tunerModelWeightsFilePath, serverPort");
+            System.out.println("Nalezy przekazac 5 parametrow - englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath, tunerModelWeightsFilePath, serverPort");
             System.exit(0);
         }
 
