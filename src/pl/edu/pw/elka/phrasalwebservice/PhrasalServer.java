@@ -13,18 +13,14 @@ import java.net.SocketTimeoutException;
 
 public class PhrasalServer {
 
-    private ParallerCorpus corpus;
-    private WordAlignmentModel alignmentModel;
-    private LanguageModel languageModel;
-    private TranslationModel translationModel;
     private Decoder decoder;
 
     public PhrasalServer(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath, String tunerModelWeightsFilePath) {
         try {
-            corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
-            alignmentModel = new WordAlignmentModel(corpus);
-            languageModel = new LanguageModel(5, corpus);
-            translationModel = new TranslationModel(alignmentModel, corpus);
+            ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
+            WordAlignmentModel alignmentModel = new WordAlignmentModel(corpus);
+            LanguageModel languageModel = new LanguageModel(5, corpus);
+            TranslationModel translationModel = new TranslationModel(alignmentModel, corpus);
             decoder = new Decoder(languageModel, translationModel, tunerModelWeightsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
