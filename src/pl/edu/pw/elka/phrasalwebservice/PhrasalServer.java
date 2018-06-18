@@ -1,6 +1,7 @@
 package pl.edu.pw.elka.phrasalwebservice;
 
 import pl.edu.pw.elka.phrasalwrapper.*;
+import pl.edu.pw.elka.phrasalwrapper.model_persistence.ModelsPersistence;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,18 +16,14 @@ public class PhrasalServer {
 
     private Decoder decoder;
 
-    public PhrasalServer(String englishFilePath, String foreignFilePath, String onlyEnglishCorpusFilePath, String tunerModelWeightsFilePath) {
+    public PhrasalServer(ModelsPersistence modelsPersistence) {
         try {
-            ParallerCorpus corpus = new ParallerCorpus(englishFilePath, foreignFilePath, onlyEnglishCorpusFilePath);
-            WordAlignmentModel alignmentModel = new WordAlignmentModel(corpus);
-            LanguageModel languageModel = new LanguageModel(5, corpus);
-            TranslationModel translationModel = new TranslationModel(alignmentModel, corpus);
-            decoder = new Decoder(languageModel, translationModel, tunerModelWeightsFilePath);
+            decoder = new Decoder(modelsPersistence);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        decoder.loadModelWithDefaultConfigInServerMode();
+        decoder.loadDecodingModel();
     }
 
     public void runTranslationService(int serverPort) {
@@ -77,7 +74,7 @@ public class PhrasalServer {
                                 break;
                             }
 
-                            String translatedSentence = decoder.translateSentenceInServerMode(input);
+                            String translatedSentence = decoder.translateSentence(input);
                             out.println(translatedSentence);
                         }
                     } catch (SocketTimeoutException e) {
