@@ -8,6 +8,9 @@ import pl.edu.pw.elka.phrasalwrapper.translation_model.TranslationModel;
 import pl.edu.pw.elka.phrasalwrapper.word_alignment.BerkeleyWordAlignmentModel;
 import pl.edu.pw.elka.phrasalwrapper.word_alignment.GizaWordAlignmentModel;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 public class TranslationPreparation {
 
     private ModelsPersistence modelsPersistence;
@@ -21,11 +24,21 @@ public class TranslationPreparation {
         ParallelCorpus trainingCorpus = corpusPreparer.getTrainingCorpus();
         ParallelCorpus tuningCorpus = corpusPreparer.getTuningCorpus();
 
-        TextCorpus englishMonolingualCorpus = new TextCorpus(englishOnlyCorpusFilePath);
-        englishMonolingualCorpus.tokenize();
+        TextCorpus englishMonolingualCorpus;
+        try {
+            englishMonolingualCorpus = new TextCorpus(englishOnlyCorpusFilePath);
+            englishMonolingualCorpus.tokenize();
+        } catch (FileNotFoundException | NullPointerException exp) {
+            englishMonolingualCorpus = null;
+        }
 
         //Building ngram model of specified parallel corpus. Here we have 5-gram model.
-        LanguageModel languageModel = new LanguageModel(5, trainingCorpus, englishMonolingualCorpus, modelsPersistence);
+        LanguageModel languageModel;
+        if (englishMonolingualCorpus == null) {
+            languageModel = new LanguageModel(5, trainingCorpus, modelsPersistence);
+        } else {
+            languageModel = new LanguageModel(5, trainingCorpus, englishMonolingualCorpus, modelsPersistence);
+        }
         languageModel.buildLanguageModel();
 
         //GIZA++ word alignment model
@@ -37,6 +50,8 @@ public class TranslationPreparation {
 
         TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
         tuner.runTuning();
+
+        System.out.println("\nTraining translation process is finished.");
 
         this.modelsPersistence = modelsPersistence;
     }
@@ -50,11 +65,21 @@ public class TranslationPreparation {
         ParallelCorpus trainingCorpus = corpusPreparer.getTrainingCorpus();
         ParallelCorpus tuningCorpus = corpusPreparer.getTuningCorpus();
 
-        TextCorpus englishMonolingualCorpus = new TextCorpus(englishOnlyCorpusFilePath);
-        englishMonolingualCorpus.tokenize();
+        TextCorpus englishMonolingualCorpus;
+        try {
+            englishMonolingualCorpus = new TextCorpus(englishOnlyCorpusFilePath);
+            englishMonolingualCorpus.tokenize();
+        } catch (FileNotFoundException | NullPointerException exp) {
+            englishMonolingualCorpus = null;
+        }
 
         //Building ngram model of specified parallel corpus. Here we have 5-gram model.
-        LanguageModel languageModel = new LanguageModel(5, trainingCorpus, englishMonolingualCorpus, modelsPersistence);
+        LanguageModel languageModel;
+        if (englishMonolingualCorpus == null) {
+            languageModel = new LanguageModel(5, trainingCorpus, modelsPersistence);
+        } else {
+            languageModel = new LanguageModel(5, trainingCorpus, englishMonolingualCorpus, modelsPersistence);
+        }
         languageModel.buildLanguageModel();
 
         //Phrasal requires alignment of parallel corpus on the level of words (word-alignment).
@@ -68,7 +93,16 @@ public class TranslationPreparation {
         TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
         tuner.runTuning();
 
+        System.out.println("\nTraining translation process is finished.");
+
         this.modelsPersistence = modelsPersistence;
+    }
+
+    public void loadTransationModelFromDirectory(String modelOutputDirPath, String modelName) throws IOException {
+        this.modelsPersistence = ModelsPersistence.loadModels(modelOutputDirPath+"/"+modelName);
+
+        System.out.println("\nLoading translation model is finished.");
+
     }
 
     public ModelsPersistence getModelsPersistence() {
