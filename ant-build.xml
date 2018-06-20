@@ -202,7 +202,7 @@
   <target name="artifact.phrasal-jar-user:jar" depends="init.artifacts, compile.module.phrasal-jar-user" description="Build &#39;phrasal-jar-user:jar&#39; artifact">
     <property name="artifact.temp.output.phrasal-jar-user:jar" value="${artifacts.temp.dir}/phrasal_jar_user_jar"/>
     <mkdir dir="${artifact.temp.output.phrasal-jar-user:jar}"/>
-    <jar destfile="${temp.jar.path.phrasal-jar-user.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+    <jar destfile="${temp.jar.path.phrasal-jar-user.jar}" duplicate="preserve" manifest="${basedir}/src/META-INF/MANIFEST.MF" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${phrasal-jar-user.output.dir}"/>
       <zipfileset src="${basedir}/lib/phrasal-wrapper.jar"/>
       <zipfileset file="${basedir}/log4j2.xml"/>
