@@ -29,8 +29,8 @@ public class Example {
 
         Decoder decoder = example.loadTranslationModel();
 
-        decoder.translateSentence("Ann has a cat");
-        decoder.translateSentence("This is my house");
+        decoder.translateSentence("Ania ma kota");
+        decoder.translateSentence("To jest mój dom");
     }
 
     public void trainTranslationModelUsingGizaAligner(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName) throws Exception {
