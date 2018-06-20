@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="phrasal-jar-user" default="all">
+  
+  
+  <property file="ant-build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+    <include name="*.swc"/>
+    <include name="*.war"/>
+    <include name="*.zip"/>
+    <include name="*.ane"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/charsets.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/cldrdata.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/dnsns.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/icedtea-sound.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/jaccess.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/localedata.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/nashorn.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunec.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunjce_provider.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/ext/zipfs.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/jce.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/jsse.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/management-agent.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/resources.jar"/>
+      <include name="../java-1.8.0-openjdk-amd64/jre/lib/rt.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.commons-cli-1.4.classpath">
+    <pathelement location="${basedir}/lib/commons-cli-1.4.jar"/>
+  </path>
+  
+  <path id="library.phrasal-wrapper.classpath">
+    <pathelement location="${basedir}/lib/phrasal-wrapper.jar"/>
+  </path>
+  
+  
+  <!-- Application Server Libraries -->
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module phrasal-jar-user -->
+  
+  <dirname property="module.phrasal-jar-user.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.phrasal-jar-user" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.phrasal-jar-user" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.phrasal-jar-user" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.phrasal-jar-user" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="phrasal-jar-user.output.dir" value="${module.phrasal-jar-user.basedir}/out/production/phrasal-jar-user"/>
+  <property name="phrasal-jar-user.testoutput.dir" value="${module.phrasal-jar-user.basedir}/out/test/phrasal-jar-user"/>
+  
+  <path id="phrasal-jar-user.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="phrasal-jar-user.module.production.classpath">
+    <path refid="${module.jdk.classpath.phrasal-jar-user}"/>
+    <path refid="library.phrasal-wrapper.classpath"/>
+    <path refid="library.commons-cli-1.4.classpath"/>
+  </path>
+  
+  <path id="phrasal-jar-user.runtime.production.module.classpath">
+    <pathelement location="${phrasal-jar-user.output.dir}"/>
+    <path refid="library.phrasal-wrapper.classpath"/>
+    <path refid="library.commons-cli-1.4.classpath"/>
+  </path>
+  
+  <path id="phrasal-jar-user.module.classpath">
+    <path refid="${module.jdk.classpath.phrasal-jar-user}"/>
+    <pathelement location="${phrasal-jar-user.output.dir}"/>
+    <path refid="library.phrasal-wrapper.classpath"/>
+    <path refid="library.commons-cli-1.4.classpath"/>
+  </path>
+  
+  <path id="phrasal-jar-user.runtime.module.classpath">
+    <pathelement location="${phrasal-jar-user.testoutput.dir}"/>
+    <pathelement location="${phrasal-jar-user.output.dir}"/>
+    <path refid="library.phrasal-wrapper.classpath"/>
+    <path refid="library.commons-cli-1.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.phrasal-jar-user">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.phrasal-jar-user">
+    <patternset refid="excluded.from.module.phrasal-jar-user"/>
+  </patternset>
+  
+  <path id="phrasal-jar-user.module.sourcepath">
+    <dirset dir="${module.phrasal-jar-user.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.phrasal-jar-user" depends="compile.module.phrasal-jar-user.production,compile.module.phrasal-jar-user.tests" description="Compile module phrasal-jar-user"/>
+  
+  <target name="compile.module.phrasal-jar-user.production" description="Compile module phrasal-jar-user; production classes">
+    <mkdir dir="${phrasal-jar-user.output.dir}"/>
+    <javac destdir="${phrasal-jar-user.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.phrasal-jar-user}/javac">
+      <compilerarg line="${compiler.args.phrasal-jar-user}"/>
+      <bootclasspath refid="phrasal-jar-user.module.bootclasspath"/>
+      <classpath refid="phrasal-jar-user.module.production.classpath"/>
+      <src refid="phrasal-jar-user.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.phrasal-jar-user"/>
+    </javac>
+    
+    <copy todir="${phrasal-jar-user.output.dir}">
+      <fileset dir="${module.phrasal-jar-user.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.phrasal-jar-user.tests" depends="compile.module.phrasal-jar-user.production" description="compile module phrasal-jar-user; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.phrasal-jar-user" description="cleanup module">
+    <delete dir="${phrasal-jar-user.output.dir}"/>
+    <delete dir="${phrasal-jar-user.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.phrasal-jar-user" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.phrasal-jar-user" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.phrasal-jar-user:jar" value="${basedir}/out/artifacts/phrasal_jar_user_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.phrasal-jar-user.jar" value="${artifacts.temp.dir}/phrasal-jar-user.jar"/>
+  </target>
+  
+  <target name="artifact.phrasal-jar-user:jar" depends="init.artifacts, compile.module.phrasal-jar-user" description="Build &#39;phrasal-jar-user:jar&#39; artifact">
+    <property name="artifact.temp.output.phrasal-jar-user:jar" value="${artifacts.temp.dir}/phrasal_jar_user_jar"/>
+    <mkdir dir="${artifact.temp.output.phrasal-jar-user:jar}"/>
+    <jar destfile="${temp.jar.path.phrasal-jar-user.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${phrasal-jar-user.output.dir}"/>
+      <zipfileset src="${basedir}/lib/phrasal-wrapper.jar"/>
+      <zipfileset file="${basedir}/log4j2.xml"/>
+    </jar>
+    <copy file="${temp.jar.path.phrasal-jar-user.jar}" tofile="${artifact.temp.output.phrasal-jar-user:jar}/phrasal-jar-user.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.phrasal-jar-user:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.phrasal-jar-user:jar}"/>
+    <copy todir="${artifact.output.phrasal-jar-user:jar}">
+      <fileset dir="${artifact.temp.output.phrasal-jar-user:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
