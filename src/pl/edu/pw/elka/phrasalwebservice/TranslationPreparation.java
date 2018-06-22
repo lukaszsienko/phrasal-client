@@ -15,12 +15,11 @@ public class TranslationPreparation {
 
     private ModelsPersistence modelsPersistence;
 
-    public void trainTranslationModelUsingGizaAligner(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName) throws Exception {
+    public void trainTranslationModelUsingGizaAligner(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName, boolean disableTuning, int everyNthGoesToTuningSet) throws Exception {
         ModelsPersistence modelsPersistence =  ModelsPersistence.createEmptyModelsDirectory(modelOutputDirPath, modelName);
 
-        final int EVERY_N_TH_GOES_TO_TUNING_SET = 14;
         CorpusPreparer corpusPreparer = new CorpusPreparer(foreignFilePath, englishFilePath);
-        corpusPreparer.splitCorpusIntoTrainAndTuneParts(EVERY_N_TH_GOES_TO_TUNING_SET, modelsPersistence);
+        corpusPreparer.splitCorpusIntoTrainAndTuneParts(everyNthGoesToTuningSet, modelsPersistence);
         ParallelCorpus trainingCorpus = corpusPreparer.getTrainingCorpus();
         ParallelCorpus tuningCorpus = corpusPreparer.getTuningCorpus();
 
@@ -48,20 +47,21 @@ public class TranslationPreparation {
         TranslationModel translationModelGiza = new GizaTranslationModel(gizaAlignmentModel, trainingCorpus, modelsPersistence);
         translationModelGiza.buildTranslationModel();
 
-        TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
-        tuner.runTuning();
+        if (!disableTuning) {
+            TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
+            tuner.runTuning();
+        }
 
         System.out.println("\nTraining translation process is finished.");
 
         this.modelsPersistence = modelsPersistence;
     }
 
-    public void trainTranslationModelUsingBerkeleyAligner(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName) throws Exception {
+    public void trainTranslationModelUsingBerkeleyAligner(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName, boolean disableTuning, int everyNthGoesToTuningSet) throws Exception {
         ModelsPersistence modelsPersistence =  ModelsPersistence.createEmptyModelsDirectory(modelOutputDirPath, modelName);
 
-        final int EVERY_N_TH_GOES_TO_TUNING_SET = 14;
         CorpusPreparer corpusPreparer = new CorpusPreparer(foreignFilePath, englishFilePath);
-        corpusPreparer.splitCorpusIntoTrainAndTuneParts(EVERY_N_TH_GOES_TO_TUNING_SET, modelsPersistence);
+        corpusPreparer.splitCorpusIntoTrainAndTuneParts(everyNthGoesToTuningSet, modelsPersistence);
         ParallelCorpus trainingCorpus = corpusPreparer.getTrainingCorpus();
         ParallelCorpus tuningCorpus = corpusPreparer.getTuningCorpus();
 
@@ -90,8 +90,10 @@ public class TranslationPreparation {
         TranslationModel translationModelBerkeley = new BerkeleyTranslationModel(berkeleyAlignmentModel, modelsPersistence);
         translationModelBerkeley.buildTranslationModel();
 
-        TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
-        tuner.runTuning();
+        if (!disableTuning) {
+            TranslationTuner tuner = new TranslationTuner(tuningCorpus, modelsPersistence);
+            tuner.runTuning();
+        }
 
         System.out.println("\nTraining translation process is finished.");
 

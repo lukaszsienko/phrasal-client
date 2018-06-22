@@ -15,6 +15,8 @@ public class Main {
     private static String modelsOutputDirPath;
     private static String modelName;
     private static boolean useGizaWordAligner;
+    private static boolean disableTuning;
+    private static int everyNthGoesToTuningSet;
 
     public static void main(String[] args) throws Exception {
         // 1) Collect wrapper run parameters
@@ -23,7 +25,7 @@ public class Main {
         // 2) Train translation model if needed or just load
         ModelsPersistence modelsPersistence;
         if (runTraining) {
-            modelsPersistence = trainTranslationModel(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelsOutputDirPath, modelName,useGizaWordAligner);
+            modelsPersistence = trainTranslationModel(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelsOutputDirPath, modelName, useGizaWordAligner, disableTuning, everyNthGoesToTuningSet);
         } else {
             modelsPersistence = loadTranslationModel(modelsOutputDirPath, modelName);
         }
@@ -47,6 +49,8 @@ public class Main {
         Option n = new Option("n", "model-name", true, "Name of the model. Corresponds to model folder name stored in "+d.getLongOpt()+" directory.");
         n.setRequired(true);
         Option g = new Option("g", "use-giza-aligner", false, "Change from default Berkeley Word Aligner to GIZA++ word aligner.");
+        Option dt = new Option("dt", "disable-tuning", false, "Disable model tuning.");
+        Option nth = new Option("nth", "nth-goes-to-tuning-set", false, "Specifies ratio between training set and tuning set, created during separation of parallel corpus. Every n-th sentence pair will go to tuning set instead of training set. Value <= 0 means that all data goes to train set and tuning will be disabled, regardless "+dt.getLongOpt()+" option.");
 
         Options options = new Options();
         options.addOption(t);
@@ -57,6 +61,8 @@ public class Main {
         options.addOption(d);
         options.addOption(n);
         options.addOption(g);
+        options.addOption(dt);
+        options.addOption(nth);
 
         // 2) Parse command line parameters and validate it
         CommandLineParser parser = new DefaultParser();
@@ -93,6 +99,9 @@ public class Main {
                 translationWebservicePortOnLocalhost = Integer.valueOf(cmd.getOptionValue(s.getOpt()));
             } catch (NumberFormatException exp) {
                 System.out.println("Cannot parse the port number specified after option "+s.getLongOpt());
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("phrasal-start", options);
+                System.exit(1);
             }
         }
         foreignFilePath = cmd.getOptionValue(f.getOpt());
@@ -101,14 +110,31 @@ public class Main {
         modelsOutputDirPath = cmd.getOptionValue(d.getOpt());
         modelName = cmd.getOptionValue(n.getOpt());
         useGizaWordAligner = cmd.hasOption(g.getOpt());
+        disableTuning = cmd.hasOption(dt.getOpt());
+        if (cmd.hasOption(nth.getOpt())) {
+            try {
+                everyNthGoesToTuningSet = Integer.valueOf(cmd.getOptionValue(nth.getOpt()));
+            } catch (NumberFormatException exp) {
+                System.out.println("Cannot parse integer value of option "+nth.getLongOpt());
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp("phrasal-start", options);
+                System.exit(1);
+            }
+            if (everyNthGoesToTuningSet <= 0) {
+                System.out.println("Warning: All parallel data goes to training set and tuning will be disabled.");
+                disableTuning = true;
+            }
+        } else {
+            everyNthGoesToTuningSet = 14;
+        }
     }
 
-    private static ModelsPersistence trainTranslationModel(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName, boolean useGizaWordAligner) throws Exception {
+    private static ModelsPersistence trainTranslationModel(String foreignFilePath, String englishFilePath, String englishOnlyCorpusFilePath, String modelOutputDirPath, String modelName, boolean useGizaWordAligner, boolean disableTuning, int everyNthGoesToTuningSet) throws Exception {
         TranslationPreparation preparation = new TranslationPreparation();
         if (useGizaWordAligner) {
-            preparation.trainTranslationModelUsingGizaAligner(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelOutputDirPath, modelName);
+            preparation.trainTranslationModelUsingGizaAligner(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelOutputDirPath, modelName, disableTuning, everyNthGoesToTuningSet);
         } else { // use Berkeley Word Aligner
-            preparation.trainTranslationModelUsingBerkeleyAligner(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelOutputDirPath, modelName);
+            preparation.trainTranslationModelUsingBerkeleyAligner(foreignFilePath, englishFilePath, englishOnlyCorpusFilePath, modelOutputDirPath, modelName, disableTuning, everyNthGoesToTuningSet);
         }
 
         return preparation.getModelsPersistence();
