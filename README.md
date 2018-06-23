@@ -12,6 +12,7 @@ usage: phrasal-start
                                         folder is/will be stored. Each
                                         training run creates model folder
                                         here.
+ -dt,--disable-tuning                   Disable model tuning.
  -e,--english-file <arg>                Path to file of english-lang part
                                         of parallel corpus.
  -e2,--english-monolingual-file <arg>   Path to file of english
@@ -24,19 +25,32 @@ usage: phrasal-start
  -n,--model-name <arg>                  Name of the model. Corresponds to
                                         model folder name stored in
                                         models-dir directory.
+ -nth,--nth-goes-to-tuning-set <arg>    Specifies ratio between training
+                                        set and tuning set, created during
+                                        separation of parallel corpus.
+                                        Every n-th sentence pair will go
+                                        to tuning set instead of training
+                                        set. Value <= 0 means that all
+                                        data goes to train set and tuning
+                                        will be disabled, regardless
+                                        disable-tuning option.
  -s,--run-server <arg>                  Run translation service on
                                         specified port of localhost
                                         machine.
  -t,--run-training                      Run generation of translation
                                         model.
 ```  
-Specyfying `--models-dir` and `--model-name` is essential. Using these parameters, program will create a path to model folder which is a directory inside `--models-dir` named `--model-name`. When training new translation model, folder named `--model-name` will be created inside already-exisiting `--models-dir` directory (see warning below).  
+Specifying `--models-dir` and `--model-name` is essential. Using these parameters, program will create a path to model folder which is a directory inside `--models-dir` named `--model-name`. When training new translation model, folder named `--model-name` will be created inside already-existing `--models-dir` directory (see warning below).  
 
 Next, when running model training (`--run-training` option) you have to provide paths to `--foreign-file` as well as `--english-file` of parallel corpus. You can optionally provide path to `--english-monolingual-file` in order to enrich english language model. When not specified enrich file, then language model will be built only on an english side od parallel corpus. Enrich file should be a text file and will be cleaned and tokenized before building language model.  
 
+Program will split parallel corpus into train set and tune set with a split ratio specified using `--nth-goes-to-tuning-set` parameter. Default value is 14. When specified value is negative or equals zero then all parallel data goes to training set and model tuning will be disabled.
+
 Default used word alignment software is Berkeley Word Aligner unless you specify `--use-giza-aligner` option.  
 
-After finished buidling translation model you can start translation service working on localhost on specified port using `--run-server port_nr`.
+After finished building translation model, the program will start model tuning unless `--disable-tuning` option is present.
+
+Finally, you can start translation service working on localhost, on specified port using `--run-server port_nr`.
 
 2.   Examples:
 

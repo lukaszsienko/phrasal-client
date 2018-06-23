@@ -50,7 +50,7 @@ public class Main {
         n.setRequired(true);
         Option g = new Option("g", "use-giza-aligner", false, "Change from default Berkeley Word Aligner to GIZA++ word aligner.");
         Option dt = new Option("dt", "disable-tuning", false, "Disable model tuning.");
-        Option nth = new Option("nth", "nth-goes-to-tuning-set", false, "Specifies ratio between training set and tuning set, created during separation of parallel corpus. Every n-th sentence pair will go to tuning set instead of training set. Value <= 0 means that all data goes to train set and tuning will be disabled, regardless "+dt.getLongOpt()+" option.");
+        Option nth = new Option("nth", "nth-goes-to-tuning-set", true, "Specifies ratio between training set and tuning set, created during separation of parallel corpus. Every n-th sentence pair will go to tuning set instead of training set. Value <= 0 means that all data goes to train set and tuning will be disabled, regardless "+dt.getLongOpt()+" option.");
 
         Options options = new Options();
         options.addOption(t);
